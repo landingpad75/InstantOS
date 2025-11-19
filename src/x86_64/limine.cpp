@@ -1,5 +1,12 @@
-#include <limine.h>
+#include "requests.hpp"
+#include <graphics/framebuffer.hpp>
 
-int main() { // we begin
-    return 0;
+extern "C" void _kinit(){
+
+    Framebuffer fb;
+
+    while (true) {
+        fb.clear(Color{0, 255, 0});
+    }
+    
 }

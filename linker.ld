@@ -36,6 +36,12 @@ SECTIONS {
 
     . = ALIGN(CONSTANT(MAXPAGESIZE));
 
+    .ConstructorList : {
+        PROVIDE_HIDDEN (constructorListStart = .);
+        KEEP(*(.ConstructorList .ConstructorList.*))
+        PROVIDE_HIDDEN (constructorListEnd = .);
+    } :data
+
     .data : {
         *(.data .data.*)
     } :data

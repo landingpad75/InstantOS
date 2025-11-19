@@ -2,18 +2,21 @@ ROOTDIR ?= ..
 
 ARCH := x86_64
 
-CC := gcc
-CXX := g++
+TOOLCHAIN := x86_64-elf-
+
+CC := $(TOOLCHAIN)gcc
+CXX := $(TOOLCHAIN)g++
 NASM := nasm
 
 FLAGS := -Wall -Wextra -nostdinc -ffreestanding -fno-stack-protector \
                 -fno-stack-check -fno-lto -fno-PIC -ffunction-sections -fdata-sections
 
 CFLAGS := -std=c11 $(FLAGS)
-CXXFLAGS := -std=c++23 -fno-rtti -fno-exceptions $(FLAGS)
+CXXFLAGS := -std=c++23 -fno-rtti -I../freestanding/cxx/include -fno-exceptions $(FLAGS)
 
 CPPFLAGS := -I$(ROOTDIR)/src \
             -I$(ROOTDIR)/outside/limine \
+			-I../freestanding/c/include \
             -I$(ROOTDIR)/src/cstd/include \
             -isystem $(ROOTDIR)/src/cxxstd/include
 

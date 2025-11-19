@@ -8,8 +8,8 @@ LD := ld
 FLAGS := -Wall -Wextra -nostdinc -ffreestanding -fno-stack-protector \
                 -fno-stack-check -fno-lto -fno-PIC -ffunction-sections -fdata-sections
 
-CFLAGS := -std=c11 $(FLAGS)
-CXXFLAGS := -std=c++23 -fno-rtti -fno-exceptions $(FLAGS)
+CFLAGS := -std=c11 -Ifreestanding/c $(FLAGS)
+CXXFLAGS := -std=c++23 -fno-rtti -fno-exceptions -Ifreestanding/c/include -Ifreestanding/cxx/include $(FLAGS)
 CPPFLAGS := -I$(CURDIR)/src \
             -I$(CURDIR)/outside/limine \
             -I$(CURDIR)/src/cstd/include \
@@ -29,7 +29,7 @@ ISO_OUT := $(CURDIR)/build/instant.iso
 .PHONY: all clean dirs iso
 
 all: dirs
-	$(MAKE) -C outside/limine
+	$(MAKE) -C outside/limine CC=gcc CXX=g++ NASM=nasm
 	$(MAKE) -C src ROOTDIR=$(CURDIR)
 	$(LD) $(LD_ARCH) $(LDFLAGS) -T linker.ld -o $(KERNEL_OUT) $(shell find src -name "*.o")
 

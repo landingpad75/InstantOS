@@ -4,11 +4,12 @@ A rewrite of the closed source graphical x86_64 operating system
 # Features
 - [x] Basic booting
 - [x] Text Rendering
+- [x] GDT
+- [x] TSS
 
 # Upcoming features
-- [] GDT Initialization
-- [] IDT Initialization
-- [] Paging
+- [ ] IDT
+- [ ] Paging
 
 # Building
 To build this OS, you need:

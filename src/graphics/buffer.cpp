@@ -1,4 +1,5 @@
 #include "buffer.hpp"
+#include <string.h>
 
 Buffer::Buffer(limine_framebuffer* fb) {
     address = reinterpret_cast<uint32_t*>(fb->address);
@@ -13,18 +14,11 @@ Buffer::~Buffer() {
 
 void Buffer::putPixel(uint64_t x, uint64_t y, Color color) {
     if (x >= width || y >= height) return;
-    uint64_t pixelColor = (static_cast<uint64_t>(color.r) << 16) |
-                           (static_cast<uint64_t>(color.g) << 8) |
-                           (static_cast<uint64_t>(color.b));
-    address[y * pitch + x] = pixelColor;
+    address[y * pitch + x] = color;
 }
-
+extern "C" void* memset32(void* dest, uint32_t value, uint64_t count);
 void Buffer::clear(Color color) {
-    for (uint64_t y = 0; y < height; y++) {
-        for (uint64_t x = 0; x < width; x++) {
-            putPixel(x, y, color);
-        }
-    }
+    memset32(address, color, height * width);
 }
 
 uint64_t Buffer::getWidth() {

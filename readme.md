@@ -2,11 +2,11 @@
 A rewrite of the closed source graphical x86_64 operating system
 
 # Features
-- [x] Console
+- [x] Terminal Emulator
+- [x] Keyboard support
 
 # Upcoming features
 - [ ] Mouse support
-- [ ] Keyboard support
 
 # Building
 To build this OS, you need:

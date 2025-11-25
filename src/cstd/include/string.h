@@ -3,11 +3,19 @@
 
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void* memset(void* dest, int val, size_t count);
 void* memcpy(void* dest, void* src, size_t count);
 void* memmove(void* dest, const void* src, size_t count);
 int memcmp(const void* b1, const void* b2, size_t count);
 void* memchr(const void* b1, int val, size_t count);
 void* memrchr(const void* b1, int val, size_t count);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

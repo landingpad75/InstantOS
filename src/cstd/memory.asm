@@ -4,25 +4,30 @@
 ; void* memset(void* dest, int val, size_t count);
 global memset
 memset:
-    ; move rsi into rax (the second parameter into rax so stosb can copy it)
+    cld
+
     mov rax, rsi
-    ; move rdx into rcx (the count so that rep can use it as a count)
     mov rcx, rdx
-    ; save the rdi register which has the destination address, which we will mov into rax later
     mov r8, rdi
-    ; repeat the fill
+
     rep stosb
-    ; restore the original address of rdi and return it
+
     mov rax, r8
     ret
 
+
+; rax memset32(rdi, rsi, rdx);
+; void* memset32(void* dest, uint32_t val, size_t count);
 global memset32
 memset32:
-    mov eax, esi        ; 32-bit fill value in EAX
-    mov rcx, rdx        ; count
-    rep stosd           ; store EAX into [RDI], repeatedly (32-bit)
-    mov rax, rdi        ; return dest
+    mov eax, esi
+    mov rcx, rdx
+
+    rep stosd
+    
+    mov rax, rdi
     ret
+
 ; rax memcpy(rdi, rsi, rdx);
 ; void* memcpy(void* dest, void* src, size_t count);
 global memcpy

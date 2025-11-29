@@ -172,7 +172,9 @@ void* VMM::getPhysical(void* virt) {
 void VMM::load() {
     if (!initialized) return;
 
-    asm volatile("mov %0, %%cr3" :: "r"(_pml4) : "memory");
+    uint64_t pml4Virt = reinterpret_cast<uint64_t>(_pml4);
+    uint64_t pml4Phys = pml4Virt - hhdm_request.response->offset;
+    asm volatile("mov %0, %%cr3" :: "r"(pml4Phys) : "memory");
 }
 
 PageTable* VMM::getCurrentPageTable() {

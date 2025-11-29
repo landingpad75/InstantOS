@@ -90,10 +90,12 @@ void PMM::reservePages(void* page, size_t count) {
     if (index >= pages) return;
 
     for (size_t i = 0; i < count; i++) {
-        if (index + i < pages && !bitmap.get(index + i)) {
-            bitmap.set(index + i);
-            usedMemory += PAGE_SIZE;
-            freeMemory -= PAGE_SIZE;
+        if (index + i < pages) {
+            if (!bitmap.get(index + i)) {
+                bitmap.set(index + i);
+                usedMemory += PAGE_SIZE;
+                freeMemory -= PAGE_SIZE;
+            }
         }
     }
 }

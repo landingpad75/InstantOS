@@ -29,3 +29,10 @@ void outw(uint16_t port, uint16_t value) {
 void outl(uint16_t port, uint32_t value) {
     asm volatile ("outl %0, %1" : : "a"(value), "Nd"(port));
 }
+
+void cpuid(uint32_t *eax, uint32_t *ebx, uint32_t *ecx, uint32_t *edx) {
+  asm volatile("cpuid \n"
+               : "=a"(*eax), "=b"(*ebx), "=c"(*ecx), "=d"(*edx)
+               : "a"(*eax), "c"(*ecx)
+               : "memory");
+}

@@ -8,6 +8,11 @@
 class Keyboard : public Interrupt {
 public:
     void initialize() override {
+        extern Console* console;
+        if (console) {
+            console->drawText("Initializing keyboard...\n");
+        }
+        
         scancodeToAscii = {
             0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b',
             '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n',
@@ -71,6 +76,12 @@ public:
                 break;
             }
         }
+        
+        if (console) {
+            console->drawText("Keyboard initialized, response: 0x");
+            console->drawHex(response);
+            console->drawText("\n");
+        }
     }
 
     void Run(InterruptFrame* frame) override {
@@ -127,6 +138,48 @@ public:
         char c = buffer[bufferTail];
         bufferTail = (bufferTail + 1) % BUFFER_SIZE;
         return c;
+    }
+
+    char poll() {
+        uint8_t status = inb(0x64);
+        if (status & 1) {
+            uint8_t scancode = inb(0x60);
+            
+            if (scancode & 0x80) {
+                scancode &= 0x7F;
+                if (scancode == 0x2A || scancode == 0x36) {
+                    shiftPressed = false;
+                } else if (scancode == 0x1D) {
+                    ctrlPressed = false;
+                } else if (scancode == 0x38) {
+                    altPressed = false;
+                }
+            } else {
+                if (scancode == 0x2A || scancode == 0x36) {
+                    shiftPressed = true;
+                } else if (scancode == 0x1D) {
+                    ctrlPressed = true;
+                } else if (scancode == 0x38) {
+                    altPressed = true;
+                } else if (scancode == 0x3A) {
+                    capsLock = !capsLock;
+                } else {
+                    if (scancode < 58) {
+                        char c = 0;
+                        bool useShift = shiftPressed ^ capsLock;
+                        
+                        if (useShift) {
+                            c = scancodeToAsciiShift[scancode];
+                        } else {
+                            c = scancodeToAscii[scancode];
+                        }
+                        
+                        return c;
+                    }
+                }
+            }
+        }
+        return 0;
     }
     
 private:

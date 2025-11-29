@@ -141,3 +141,100 @@ memrchr:
     ; reset the decrement flag and return
     cld
     ret
+; size_t strlen(const char* str);
+global strlen
+strlen:
+    xor rax, rax
+    mov rcx, -1
+    xor al, al
+    repne scasb
+    not rcx
+    dec rcx
+    mov rax, rcx
+    ret
+
+; char* strcpy(char* dest, const char* src);
+global strcpy
+strcpy:
+    mov rax, rdi
+.loop:
+    mov cl, [rsi]
+    mov [rdi], cl
+    inc rsi
+    inc rdi
+    test cl, cl
+    jnz .loop
+    ret
+
+; char* strncpy(char* dest, const char* src, size_t n);
+global strncpy
+strncpy:
+    mov rax, rdi
+    mov rcx, rdx
+.loop:
+    test rcx, rcx
+    jz .done
+    mov r8b, [rsi]
+    mov [rdi], r8b
+    inc rsi
+    inc rdi
+    dec rcx
+    test r8b, r8b
+    jnz .loop
+.pad:
+    test rcx, rcx
+    jz .done
+    mov byte [rdi], 0
+    inc rdi
+    dec rcx
+    jmp .pad
+.done:
+    ret
+
+; int strcmp(const char* s1, const char* s2);
+global strcmp
+strcmp:
+.loop:
+    mov al, [rdi]
+    mov cl, [rsi]
+    cmp al, cl
+    jne .diff
+    test al, al
+    jz .equal
+    inc rdi
+    inc rsi
+    jmp .loop
+.diff:
+    movzx eax, al
+    movzx ecx, cl
+    sub eax, ecx
+    ret
+.equal:
+    xor eax, eax
+    ret
+
+; int strncmp(const char* s1, const char* s2, size_t n);
+global strncmp
+strncmp:
+    mov rcx, rdx
+.loop:
+    test rcx, rcx
+    jz .equal
+    mov al, [rdi]
+    mov r8b, [rsi]
+    cmp al, r8b
+    jne .diff
+    test al, al
+    jz .equal
+    inc rdi
+    inc rsi
+    dec rcx
+    jmp .loop
+.diff:
+    movzx eax, al
+    movzx r8d, r8b
+    sub eax, r8d
+    ret
+.equal:
+    xor eax, eax
+    ret
